@@ -4,8 +4,12 @@ import { startScheduler, startSlackScheduler } from './services/scheduler.js'
 import { sendSlackSummary } from './services/slack.js'
 import { config } from './config.js'
 
-// Warm cache before accepting any requests
-await warmCache()
+// Warm cache before accepting any requests — start anyway if it fails so users see an error
+try {
+  await warmCache()
+} catch (err) {
+  console.error('Startup cache warm failed:', err.message)
+}
 
 const server = await createServer()
 await server.start()

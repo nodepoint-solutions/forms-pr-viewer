@@ -250,6 +250,10 @@ code {
   background: var(--orange-bg);
   color: var(--orange);
 }
+.app-alert--error {
+  background: var(--red-bg);
+  color: var(--red);
+}
 
 /* ============================================================
    MAIN + PAGE HEADER

@@ -1,7 +1,7 @@
 const {
   PORT = '3000',
   GITHUB_TOKEN,
-  CACHE_TTL_MS = '300000',
+  CACHE_TTL_MS = '1200000',
   NODE_ENV = 'production',
   SLACK_BOT_TOKEN,
   SLACK_CHANNEL_ID,
