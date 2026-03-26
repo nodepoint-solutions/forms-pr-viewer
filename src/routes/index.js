@@ -6,7 +6,7 @@ export default {
   method: 'GET',
   path: '/',
   async handler(request, h) {
-    const { repo = '', author = '', sort = 'updated', dir = 'desc', groupBy = '', cooldown, slack } = request.query
+    const { repo = '', author = '', sort = 'updated', dir = 'desc', groupBy = 'jira', cooldown, slack } = request.query
     const cooldownFlag = cooldown === '1'
     const slackEnabled = !!(config.slackBotToken && config.slackChannelId)
     const data = await getPRs()

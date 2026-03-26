@@ -6,7 +6,7 @@ export default {
   path: '/unreviewed',
   options: { validate: { options: { allowUnknown: true }, failAction: 'ignore' } },
   async handler(request, h) {
-    const { repo = '', author = '', sort = 'updated', dir = 'desc', groupBy = '', cooldown } = request.query
+    const { repo = '', author = '', sort = 'updated', dir = 'desc', groupBy = 'jira', cooldown } = request.query
     const cooldownFlag = cooldown === '1'
     const data = await getPRs()
     const basePRs = data.prs.filter((pr) => !pr.isReviewed && !pr.draft && !isBot({ type: pr.authorType, login: pr.author }))
