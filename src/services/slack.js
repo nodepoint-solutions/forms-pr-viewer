@@ -56,32 +56,49 @@ export function buildSlackBlocks() {
     text: { type: 'plain_text', text: `PR Review — ${dateStr}`, emoji: true },
   })
 
+  const MAX_LINES = 20
+  let linesLeft = MAX_LINES
+  const totalPRs = needsReReview.length + awaitingReview.length
+  const truncated = totalPRs > MAX_LINES
+
   if (needsReReview.length > 0) {
     const lines = [`:arrows_counterclockwise: *Needs re-review* (${needsReReview.length}) — reviewed but new commits pushed since`]
     for (const pr of needsReReview) {
+      if (linesLeft === 0) break
       const ticket = pr.jiraTicket ? `${pr.jiraTicket} · ` : ''
       lines.push(`• \`${pr.repo}\` — ${pr.title} · ${ticket}@${pr.author} · ${ageText(pr.createdAt)}`)
+      linesLeft--
     }
     blocks.push({ type: 'section', text: { type: 'mrkdwn', text: lines.join('\n') } })
     blocks.push({ type: 'divider' })
   }
 
-  if (awaitingReview.length > 0) {
+  if (awaitingReview.length > 0 && linesLeft > 0) {
     blocks.push({
       type: 'section',
       text: { type: 'mrkdwn', text: `:eyes: *Awaiting first review* (${awaitingReview.length})` },
     })
 
     for (const group of groupByJira(awaitingReview)) {
+      if (linesLeft === 0) break
       const label = group.label ?? 'No ticket'
       const lines = [`*${label}* (${group.prs.length})`]
       for (const pr of group.prs) {
+        if (linesLeft === 0) break
         lines.push(`• \`${pr.repo}\` — ${pr.title} · @${pr.author} · ${ageText(pr.createdAt)}`)
+        linesLeft--
       }
       blocks.push({ type: 'section', text: { type: 'mrkdwn', text: lines.join('\n') } })
     }
 
     blocks.push({ type: 'divider' })
+  }
+
+  if (truncated) {
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `_${totalPRs - MAX_LINES} more PR${totalPRs - MAX_LINES !== 1 ? 's' : ''} not shown — <https://forms-pulls.apps.nodepoint.co.uk|see app for full list>_` },
+    })
   }
 
   const fetchedNote = fetchedAt
