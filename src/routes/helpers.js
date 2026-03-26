@@ -49,12 +49,13 @@ export function buildSelectOptions(prs, field) {
 }
 
 export function buildNavCounts({ prs, teamMembers }) {
+  const nonBotPRs = prs.filter((pr) => pr.authorType !== 'Bot' && !pr.author.endsWith('[bot]'))
   return {
-    needsReReview: prs.filter((pr) => pr.isReviewed && pr.hasUnreviewedCommits && !pr.draft).length,
-    unreviewed: prs.filter((pr) => !pr.isReviewed && !pr.draft && pr.authorType !== 'Bot').length,
-    team: prs.filter((pr) => teamMembers.has(pr.author) && pr.authorType !== 'Bot').length,
-    all: prs.length,
-    stale: prs.filter((pr) => pr.isStale).length,
+    needsReReview: nonBotPRs.filter((pr) => pr.isReviewed && pr.hasUnreviewedCommits && !pr.draft).length,
+    unreviewed: nonBotPRs.filter((pr) => !pr.isReviewed && !pr.draft).length,
+    team: nonBotPRs.filter((pr) => teamMembers.has(pr.author)).length,
+    all: nonBotPRs.length,
+    stale: nonBotPRs.filter((pr) => pr.isStale).length,
   }
 }
 

@@ -130,7 +130,7 @@ describe('buildNavCounts', () => {
     expect(counts.needsReReview).toBe(1)
     expect(counts.unreviewed).toBe(1) // bob only; draft excluded
     expect(counts.team).toBe(2)       // alice + bob (carol not in team, bot excluded)
-    expect(counts.all).toBe(4)
+    expect(counts.all).toBe(3)        // bots excluded
     expect(counts.stale).toBe(1)
   })
 })
