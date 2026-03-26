@@ -104,8 +104,8 @@ export async function warmCache() {
 
   const teamMembersSet = new Set(teamMembers.map((m) => m.login))
 
-  // Only include repos the team can push to — excludes read-only access to other teams' repos
-  const ownedRepos = repos.filter((repo) => repo.permissions?.push)
+  // Only include repos where forms is an admin/owner — excludes repos with mere write access
+  const ownedRepos = repos.filter((repo) => repo.permissions?.admin)
 
   // Fetch open PRs for all repos in parallel, tolerating individual failures
   const prsByRepo = await Promise.all(
