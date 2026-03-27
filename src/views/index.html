@@ -4,7 +4,7 @@
 
 {% block content %}
   <div class="app-page-header">
-    <p class="app-page-header__caption">DEFRA / forms team</p>
+    <p class="app-page-header__caption">{{ org }} / {{ team }} team</p>
     <h1 class="app-page-header__title">{{ title }}</h1>
     <p class="app-page-header__desc">{{ description }}</p>
     <p class="app-page-header__meta">
@@ -19,5 +19,5 @@
 
   <p class="app-table-meta">Showing <strong>{{ prs.length }}</strong> pull request{{ "s" if prs.length != 1 }}</p>
 
-  {% if groups %}{{ prTableGrouped(groups, query, "/") }}{% else %}{{ prTable(prs, query, "/") }}{% endif %}
+  {% if groups %}{{ prTableGrouped(groups, query, "/", jiraBaseUrl) }}{% else %}{{ prTable(prs, query, "/") }}{% endif %}
 {% endblock %}

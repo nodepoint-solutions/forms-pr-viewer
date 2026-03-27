@@ -63,7 +63,7 @@ export function buildSlackBlocks() {
   const ghUser = (login) => `<https://github.com/${login}|@${login}>`
 
   const prLine = (pr) => {
-    const linkText = `DEFRA/${pr.repo}: ${pr.title} #${pr.number}`
+    const linkText = `${config.org}/${pr.repo}: ${pr.title} #${pr.number}`
     return `• <${pr.url}|${linkText}> by ${ghUser(pr.author)} · ${ageText(pr.createdAt)}`
   }
 
@@ -111,15 +111,19 @@ export function buildSlackBlocks() {
     ? `data from ${new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' }).format(fetchedAt)}`
     : 'cache not warmed'
 
+  const reportLink = config.appUrl
+    ? `<${config.appUrl}|Full report> · `
+    : ''
   blocks.push({
     type: 'context',
     elements: [{
       type: 'mrkdwn',
-      text: `<https://forms-pulls.apps.nodepoint.co.uk|Full report> · ${fetchedNote}`,
+      text: `${reportLink}${fetchedNote}`,
     }],
   })
 
-  const fallbackText = `PR Review — ${dateStr}: ${needsReReview.length} need re-review, ${awaitingReview.length} awaiting first review. https://forms-pulls.apps.nodepoint.co.uk`
+  const fallbackSuffix = config.appUrl ? ` ${config.appUrl}` : ''
+  const fallbackText = `PR Review — ${dateStr}: ${needsReReview.length} need re-review, ${awaitingReview.length} awaiting first review.${fallbackSuffix}`
 
   return { blocks, text: fallbackText }
 }

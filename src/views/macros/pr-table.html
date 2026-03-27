@@ -9,7 +9,7 @@
   {% endif %}
 {% endmacro %}
 
-{% macro prTableGrouped(groups, query, currentPath) %}
+{% macro prTableGrouped(groups, query, currentPath, jiraBaseUrl) %}
   {% if groups.length == 0 %}
     <div class="app-empty">
       <p>No pull requests match the current filters.</p>
@@ -20,7 +20,11 @@
       <div class="app-group">
         <h2 class="app-group__heading">
           {% if group.label %}
-            <a class="app-group__ticket" href="https://eaflood.atlassian.net/browse/{{ group.label }}" target="_blank" rel="noopener noreferrer">{{ group.label }}</a>
+            {% if jiraBaseUrl %}
+              <a class="app-group__ticket" href="{{ jiraBaseUrl }}/{{ group.label }}" target="_blank" rel="noopener noreferrer">{{ group.label }}</a>
+            {% else %}
+              <span class="app-group__ticket">{{ group.label }}</span>
+            {% endif %}
           {% else %}
             <span class="app-group__ticket app-group__ticket--none">No ticket</span>
           {% endif %}

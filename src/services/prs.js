@@ -3,9 +3,7 @@ import * as cache from './cache.js'
 import { fetchAllPages } from './github.js'
 
 const FOURTEEN_DAYS_MS = 14 * 24 * 60 * 60 * 1000
-const ORG = 'DEFRA'
-const TEAM = 'forms'
-const JIRA_RE = /\bDF-\d+\b/gi
+const JIRA_RE = new RegExp(`\\b${config.jiraTicketPattern}\\b`, 'gi')
 
 export function extractJiraTicket(rawPR) {
   const text = [rawPR.title ?? '', rawPR.body ?? '', rawPR.head?.ref ?? ''].join(' ')
@@ -97,21 +95,22 @@ export function getPRs() {
 export async function warmCache() {
   const { githubToken } = config
 
+  const { org, team } = config
   const [teamMembers, repos] = await Promise.all([
-    fetchAllPages(`/orgs/${ORG}/teams/${TEAM}/members`, githubToken),
-    fetchAllPages(`/orgs/${ORG}/teams/${TEAM}/repos`, githubToken),
+    fetchAllPages(`/orgs/${org}/teams/${team}/members`, githubToken),
+    fetchAllPages(`/orgs/${org}/teams/${team}/repos`, githubToken),
   ])
 
   const teamMembersSet = new Set(teamMembers.map((m) => m.login))
 
-  // Only include repos where forms is an admin/owner — excludes repos with mere write access
+  // Only include repos where the team is an admin/owner — excludes repos with mere write access
   const ownedRepos = repos.filter((repo) => repo.permissions?.admin)
 
   // Fetch open PRs for all repos in parallel, tolerating individual failures
   const prsByRepo = await Promise.all(
     ownedRepos.map((repo) =>
       fetchAllPages(
-        `/repos/${ORG}/${repo.name}/pulls?state=open&per_page=100`,
+        `/repos/${org}/${repo.name}/pulls?state=open&per_page=100`,
         githubToken
       ).catch((err) => {
         console.error(`Failed to fetch PRs for ${repo.name}:`, err.message)
@@ -132,8 +131,8 @@ export async function warmCache() {
     async (rawPR) => {
       const repoName = rawPR.base.repo.name
       const [reviews, commits] = await Promise.all([
-        fetchAllPages(`/repos/${ORG}/${repoName}/pulls/${rawPR.number}/reviews?per_page=100`, githubToken),
-        fetchAllPages(`/repos/${ORG}/${repoName}/pulls/${rawPR.number}/commits?per_page=100`, githubToken),
+        fetchAllPages(`/repos/${org}/${repoName}/pulls/${rawPR.number}/reviews?per_page=100`, githubToken),
+        fetchAllPages(`/repos/${org}/${repoName}/pulls/${rawPR.number}/commits?per_page=100`, githubToken),
       ])
       return formatPR(rawPR, reviews ?? [], commits ?? [])
     },

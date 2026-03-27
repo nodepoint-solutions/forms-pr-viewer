@@ -1,3 +1,4 @@
+import { config } from '../config.js'
 import { getPRs, isBot } from '../services/prs.js'
 import { applyFilters, applySort, buildViewContext } from './helpers.js'
 
@@ -11,6 +12,6 @@ export default {
     const data = await getPRs()
     const basePRs = data.prs.filter((pr) => !isBot({ type: pr.authorType, login: pr.author }))
     const prs = applySort(applyFilters(basePRs, { repo, author }), sort, dir)
-    return h.view('all', buildViewContext(data, prs, prs, { repo, author, sort, dir, groupBy }, '/all', 'All PRs', 'All open pull requests across DEFRA/forms team repositories.', cooldownFlag))
+    return h.view('all', buildViewContext(data, prs, prs, { repo, author, sort, dir, groupBy }, '/all', 'All PRs', `All open pull requests across ${config.org}/${config.team} team repositories.`, cooldownFlag))
   },
 }

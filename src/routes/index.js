@@ -17,6 +17,6 @@ export default {
 
     const prs = applySort(applyFilters(basePRs, { repo, author }), sort, dir)
 
-    return h.view('index', buildViewContext(data, prs, prs, { repo, author, sort, dir, groupBy }, '/', 'Needs review - Team PRs', 'Pull requests opened by members of the DEFRA/forms team that need review.', cooldownFlag, slack ?? null, slackEnabled))
+    return h.view('index', buildViewContext(data, prs, prs, { repo, author, sort, dir, groupBy }, '/', 'Needs review - Team PRs', `Pull requests opened by members of the ${config.org}/${config.team} team that need review.`, cooldownFlag, slack ?? null, slackEnabled))
   },
 }

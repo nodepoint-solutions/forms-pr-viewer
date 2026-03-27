@@ -1,3 +1,5 @@
+import { config } from '../config.js'
+
 export function formatAge(date) {
   const ms = Date.now() - new Date(date).getTime()
   const minutes = Math.floor(ms / 60_000)
@@ -108,5 +110,8 @@ export function buildViewContext(data, basePRs, prs, query, currentPath, title, 
     cooldown,
     slackStatus,
     slackEnabled,
+    org: config.org,
+    team: config.team,
+    jiraBaseUrl: config.jiraBaseUrl,
   }
 }

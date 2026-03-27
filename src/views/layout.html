@@ -23,7 +23,7 @@
           </svg>
           <span>PR Viewer</span>
         </a>
-        <span class="app-brand__sub">DEFRA / forms</span>
+        <span class="app-brand__sub">{{ org }} / {{ team }}</span>
       </div>
 
       <nav class="app-nav" aria-label="PR categories">
@@ -99,7 +99,7 @@
     <div class="app-content">
       {% if not fetchedAt %}
         <div class="app-alert app-alert--error">
-          Unable to load PR data — the GitHub token may be invalid, expired, or not authorised for the DEFRA org via SSO. Check that <code>GITHUB_TOKEN</code> is set correctly.
+          Unable to load PR data — the GitHub token may be invalid, expired, or not authorised for the {{ org }} org via SSO. Check that <code>GITHUB_TOKEN</code> is set correctly.
         </div>
       {% endif %}
 
