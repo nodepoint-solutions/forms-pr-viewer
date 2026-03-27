@@ -5,9 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js 22+](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](https://nodejs.org/)
 
-![Dashboard screenshot](docs/screenshot.png)
-
 A self-hosted dashboard that shows open pull requests for a GitHub team. It surfaces PRs that need review, PRs that have been reviewed but have new commits since, and stale PRs — filtered to repos where the team has admin ownership.
+
+![Dashboard screenshot](docs/screenshot.png)
 
 ## Features
 
