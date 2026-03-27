@@ -19,5 +19,5 @@
 
   <p class="app-table-meta">Showing <strong>{{ prs.length }}</strong> pull request{{ "s" if prs.length != 1 }}</p>
 
-  {% if groups %}{{ prTableGrouped(groups, query, "/unreviewed", jiraBaseUrl) }}{% else %}{{ prTable(prs, query, "/unreviewed") }}{% endif %}
+  {% if groups %}{{ prTableGrouped(groups, query, "/unreviewed", jiraBaseUrl, org) }}{% else %}{{ prTable(prs, query, "/unreviewed", org) }}{% endif %}
 {% endblock %}

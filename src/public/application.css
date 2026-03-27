@@ -489,6 +489,16 @@ table.app-table {
   color: var(--text-muted);
 }
 
+/* Clickable filter shortcut links in table cells */
+.app-filter-link {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.app-filter-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
 /* Status pills */
 .app-pill {
   display: inline-flex;
@@ -588,4 +598,99 @@ table.app-table {
   font-size: 12px;
   color: var(--text-subtle);
   font-family: var(--mono);
+}
+
+/* ============================================================
+   NAV DETAILS (mobile toggle, always-open on desktop)
+   ============================================================ */
+.app-nav-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide the summary — nav is always visible on desktop */
+.app-nav-summary { display: none; }
+
+/* ============================================================
+   RESPONSIVE — MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* Stack sidebar above content */
+  .app-shell { flex-direction: column; }
+
+  .app-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-y: visible;
+  }
+
+  .app-sidebar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+
+  .app-brand__sub { display: none; }
+
+  /* The details element: not a flex column on mobile */
+  .app-nav-details {
+    display: block;
+    flex: none;
+  }
+
+  /* Show the toggle summary */
+  .app-nav-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-subtle);
+    list-style: none;
+    user-select: none;
+  }
+  .app-nav-summary::-webkit-details-marker { display: none; }
+  .app-nav-summary:hover { color: var(--text); }
+
+  .app-nav-summary__chevron {
+    transition: transform 0.15s;
+  }
+  .app-nav-details[open] .app-nav-summary__chevron {
+    transform: rotate(180deg);
+  }
+
+  .app-nav { padding: 8px 10px; }
+
+  .app-sidebar__actions { padding: 10px 12px; margin-top: 0; }
+
+  /* Content: full width, no left offset */
+  .app-content { margin-left: 0; }
+
+  /* Reduce page padding */
+  .app-main { padding: 24px 16px 48px; }
+
+  /* Filters: stack fields full-width */
+  .app-filters { flex-direction: column; gap: 12px; padding: 16px; }
+
+  .app-filter-field { width: 100%; }
+
+  .app-select { min-width: 0; width: 100%; }
+
+  .app-filter-actions { width: 100%; }
+
+  .app-btn { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .app-page-header__title { font-size: 18px; }
+  .app-main { padding: 20px 12px 40px; }
 }

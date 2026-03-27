@@ -26,5 +26,5 @@
 
   <p class="app-table-meta">Showing <strong>{{ prs.length }}</strong> pull request{{ "s" if prs.length != 1 }}</p>
 
-  {% if groups %}{{ prTableGrouped(groups, query, "/needs-re-review", jiraBaseUrl) }}{% else %}{{ prTable(prs, query, "/needs-re-review") }}{% endif %}
+  {% if groups %}{{ prTableGrouped(groups, query, "/needs-re-review", jiraBaseUrl, org) }}{% else %}{{ prTable(prs, query, "/needs-re-review", org) }}{% endif %}
 {% endblock %}

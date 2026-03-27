@@ -1,15 +1,15 @@
-{% macro prTable(prs, query, currentPath) %}
+{% macro prTable(prs, query, currentPath, org) %}
   {% if prs.length == 0 %}
     <div class="app-empty">
       <p>No pull requests match the current filters.</p>
       <p><a href="{{ currentPath }}">Clear filters</a></p>
     </div>
   {% else %}
-    {{ _table(prs, query, currentPath) }}
+    {{ _table(prs, query, currentPath, org) }}
   {% endif %}
 {% endmacro %}
 
-{% macro prTableGrouped(groups, query, currentPath, jiraBaseUrl) %}
+{% macro prTableGrouped(groups, query, currentPath, jiraBaseUrl, org) %}
   {% if groups.length == 0 %}
     <div class="app-empty">
       <p>No pull requests match the current filters.</p>
@@ -30,13 +30,13 @@
           {% endif %}
           <span class="app-group__count">{{ group.prs.length }} PR{{ "s" if group.prs.length != 1 }}</span>
         </h2>
-        {{ _table(group.prs, query, currentPath) }}
+        {{ _table(group.prs, query, currentPath, org) }}
       </div>
     {% endfor %}
   {% endif %}
 {% endmacro %}
 
-{% macro _table(prs, query, currentPath) %}
+{% macro _table(prs, query, currentPath, org) %}
 <div class="app-table-wrap">
   <table class="app-table">
     <thead>
@@ -87,9 +87,13 @@
           <span class="app-pr-number">#{{ pr.number }}</span>
         </td>
 
-        <td class="app-mono">{{ pr.author }}</td>
+        <td class="app-mono">
+          <a class="app-filter-link" href="https://github.com/{{ pr.author }}" target="_blank" rel="noopener noreferrer">{{ pr.author }}</a>
+        </td>
 
-        <td class="app-mono">{{ pr.repo }}</td>
+        <td class="app-mono">
+          <a class="app-filter-link" href="https://github.com/{{ org }}/{{ pr.repo }}" target="_blank" rel="noopener noreferrer">{{ pr.repo }}</a>
+        </td>
 
         <td class="app-mono" title="{{ pr.createdAt }}">{{ pr.ageFormatted }}</td>
 
