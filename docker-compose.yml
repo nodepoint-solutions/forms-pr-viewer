@@ -1,11 +1,18 @@
 services:
   pr-viewer:
-    image: ghcr.io/${GITHUB_REPOSITORY:-your-org/pr-viewer}:latest
+    image: ghcr.io/nodepoint-solutions/github-team-pr-viewer:latest
     ports:
       - "3000:3000"
     environment:
       GITHUB_TOKEN: ${GITHUB_TOKEN}
+      SLACK_CHANNEL_ID: ${SLACK_CHANNEL_ID}
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
       PORT: 3000
       CACHE_TTL_MS: ${CACHE_TTL_MS:-300000}
       NODE_ENV: production
+      GITHUB_ORG: ${GITHUB_ORG}
+      GITHUB_TEAM: ${GITHUB_TEAM}
+      JIRA_TICKET_PATTERN: ${JIRA_TICKET_PATTERN}
+      JIRA_BASE_URL: ${JIRA_BASE_URL}
+      APP_URL: ${APP_URL}
     restart: unless-stopped
