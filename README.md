@@ -42,8 +42,8 @@ All configuration is via environment variables. Copy `.env.example` to `.env` an
 | Variable | Required | Description |
 |---|---|---|
 | `GITHUB_TOKEN` | Yes | Personal access token with `read:org` and `repo` scopes |
-| `GITHUB_ORG` | Yes | GitHub organisation name (e.g. `DEFRA`) |
-| `GITHUB_TEAM` | Yes | Team slug within the org (e.g. `forms`) |
+| `GITHUB_ORG` | Yes | GitHub organisation name |
+| `GITHUB_TEAM` | Yes | Team slug within the org |
 | `JIRA_TICKET_PATTERN` | No | Regex pattern to extract ticket refs from PR titles/branches (e.g. `ABC-\d+`). Must be set together with `JIRA_BASE_URL` |
 | `JIRA_BASE_URL` | No | Base URL for Jira links, no trailing slash (e.g. `https://yourorg.atlassian.net/browse`). Must be set together with `JIRA_TICKET_PATTERN` |
 | `APP_URL` | No | Public URL of this app. Used in Slack message footers |
@@ -66,7 +66,7 @@ docker run -p 3000:3000 --env-file .env pr-viewer
 A pre-built image is published to GitHub Container Registry on every push to `main`:
 
 ```bash
-docker pull ghcr.io/<your-org>/<your-repo>:latest
+docker pull ghcr.io/nodepoint-solutions/github-team-pr-viewer:latest
 ```
 
 ## Tech stack
