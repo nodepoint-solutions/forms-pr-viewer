@@ -1,7 +1,7 @@
 {
-  "name": "pr-viewer",
+  "name": "github-team-pr-viewer",
   "version": "1.0.0",
-  "description": "DEFRA forms team PR review dashboard",
+  "description": "GitHub team PR review dashboard",
   "type": "module",
   "private": true,
   "scripts": {
