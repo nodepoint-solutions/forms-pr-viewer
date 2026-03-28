@@ -727,6 +727,7 @@ table.app-table {
   font-family: var(--font);
   white-space: nowrap;
   transition: color 0.15s, border-color 0.15s;
+  text-decoration: none;
 }
 
 .dep-tab:hover {

@@ -28,6 +28,9 @@ export default {
       return { key, ecosystem, packageName, latest, drifting, current, driftCount: drifting.length }
     })
 
+    const activeKey = request.query.dep ?? depsView[0]?.key ?? null
+    const activePanel = depsView.find((d) => d.key === activeKey) ?? depsView[0] ?? null
+
     return h.view('dependencies', {
       title: 'Dependency Drift',
       currentPath: '/dependencies',
@@ -39,6 +42,8 @@ export default {
       trackedDependencies: depData.trackedDependencies,
       driftCount: depData.driftCount,
       depsView,
+      activeKey,
+      activePanel,
     })
   },
 }

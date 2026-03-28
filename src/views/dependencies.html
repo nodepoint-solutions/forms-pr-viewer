@@ -32,13 +32,12 @@
     <div class="dep-focus">
 
       {% if depsView.length > 1 %}
-        <div class="dep-tabs" role="tablist">
+        <nav class="dep-tabs" aria-label="Dependency tabs">
           {% for dep in depsView %}
-            <button
-              class="dep-tab{{ ' dep-tab--drift' if dep.driftCount > 0 }}{{ ' is-active' if loop.first }}"
-              role="tab"
-              aria-selected="{{ 'true' if loop.first else 'false' }}"
-              data-panel="dep-panel-{{ loop.index0 }}">
+            <a
+              href="/dependencies?dep={{ dep.key }}"
+              class="dep-tab{{ ' dep-tab--drift' if dep.driftCount > 0 }}{{ ' is-active' if dep.key == activeKey }}"
+              aria-current="{{ 'page' if dep.key == activeKey else 'false' }}">
               <span class="dep-tab__top">
                 <span class="dep-tab__name">{{ dep.packageName }}</span>
                 {% if dep.driftCount > 0 %}
@@ -46,30 +45,28 @@
                 {% endif %}
               </span>
               <span class="dep-tab__eco">{{ dep.ecosystem }}</span>
-            </button>
+            </a>
           {% endfor %}
-        </div>
+        </nav>
       {% endif %}
 
-      {% for dep in depsView %}
-        <div class="dep-panel"
-             id="dep-panel-{{ loop.index0 }}"
-             {% if depsView.length > 1 and not loop.first %}style="display:none"{% endif %}>
+      {% if activePanel %}
+        <div class="dep-panel">
 
           <div class="dep-panel__header">
-            <span class="dep-panel__name">{{ dep.packageName }}</span>
-            <span class="dep-panel__eco">{{ dep.ecosystem }}</span>
-            {% if dep.latest %}
-              <span class="dep-panel__latest">latest <strong>{{ dep.latest }}</strong></span>
+            <span class="dep-panel__name">{{ activePanel.packageName }}</span>
+            <span class="dep-panel__eco">{{ activePanel.ecosystem }}</span>
+            {% if activePanel.latest %}
+              <span class="dep-panel__latest">latest <strong>{{ activePanel.latest }}</strong></span>
             {% endif %}
           </div>
 
-          {% if dep.driftCount > 0 %}
+          {% if activePanel.driftCount > 0 %}
             <div class="dep-section">
               <div class="dep-section__label dep-section__label--behind">
-                Behind &mdash; {{ dep.driftCount }} repo{{ "s" if dep.driftCount != 1 }}
+                Behind &mdash; {{ activePanel.driftCount }} repo{{ "s" if activePanel.driftCount != 1 }}
               </div>
-              {% for item in dep.drifting %}
+              {% for item in activePanel.drifting %}
                 <div class="dep-behind-card">
                   <span class="dep-behind-repo">{{ item.repo }}</span>
                   <span class="dep-behind-versions">
@@ -82,12 +79,12 @@
             </div>
           {% endif %}
 
-          {% if dep.current.length %}
+          {% if activePanel.current.length %}
             <div class="dep-section">
               <div class="dep-section__label dep-section__label--current">
-                Up to date &mdash; {{ dep.current.length }} repo{{ "s" if dep.current.length != 1 }}
+                Up to date &mdash; {{ activePanel.current.length }} repo{{ "s" if activePanel.current.length != 1 }}
               </div>
-              {% for item in dep.current %}
+              {% for item in activePanel.current %}
                 <div class="dep-current-row">
                   <span class="dep-current-check">✓</span>
                   <span class="dep-current-repo">{{ item.repo }}</span>
@@ -97,30 +94,11 @@
             </div>
           {% endif %}
 
-          {% if dep.driftCount == 0 and not dep.current.length %}
+          {% if activePanel.driftCount == 0 and not activePanel.current.length %}
             <p class="dep-empty">No repos have this dependency installed.</p>
           {% endif %}
 
         </div>
-      {% endfor %}
-
-      {% if depsView.length > 1 %}
-        <script>
-          document.querySelectorAll('.dep-tab').forEach((tab) => {
-            tab.addEventListener('click', () => {
-              document.querySelectorAll('.dep-tab').forEach((t) => {
-                t.classList.remove('is-active')
-                t.setAttribute('aria-selected', 'false')
-              })
-              document.querySelectorAll('.dep-panel').forEach((p) => {
-                p.style.display = 'none'
-              })
-              tab.classList.add('is-active')
-              tab.setAttribute('aria-selected', 'true')
-              document.getElementById(tab.dataset.panel).style.display = 'block'
-            })
-          })
-        </script>
       {% endif %}
 
     </div>
