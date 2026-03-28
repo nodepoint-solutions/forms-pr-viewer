@@ -53,10 +53,10 @@
                   {% if cell.pinned is null %}
                     <span class="app-dep--absent">—</span>
                   {% elif cell.isDrift %}
-                    <span class="app-pill app-pill--red" title="Latest: {{ cell.latest }}">{{ cell.pinned }}</span>
-                    {% if cell.latest %}
-                      <div class="app-dep-latest">→ {{ cell.latest }}</div>
-                    {% endif %}
+                    <span class="app-dep-drift-line">
+                      <span class="app-pill app-pill--red app-pill--lg">{{ cell.pinned }}</span>
+                      {% if cell.latest %}<span class="app-dep-latest">→ {{ cell.latest }}</span>{% endif %}
+                    </span>
                   {% else %}
                     <span class="app-pill app-pill--green">{{ cell.pinned }}</span>
                   {% endif %}

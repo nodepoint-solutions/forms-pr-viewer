@@ -715,9 +715,20 @@ table.app-table {
   font-size: 13px;
 }
 
+.app-dep-drift-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.app-pill--lg {
+  font-size: 13px;
+  padding: 3px 8px;
+}
+
 .app-dep-latest {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--green);
-  margin-top: 4px;
 }
