@@ -6,9 +6,9 @@ import { config } from '../config.js'
 export default {
   method: 'GET',
   path: '/dependencies',
-  async handler(request, h) {
+  handler(request, h) {
     const prData = getPRs()
-    const depData = await getDependencies()
+    const depData = getDependencies()
 
     const depsView = depData.trackedDependencies.map(({ ecosystem, packageName }) => {
       const key = `${ecosystem}:${packageName}`

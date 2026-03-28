@@ -38,6 +38,10 @@ const mockNpmAdapter = {
 
 jest.unstable_mockModule('../../../src/services/dependencies/adapters/npm.js', () => mockNpmAdapter)
 
+// Reset module registry so this file always loads the real module, even if another
+// test file (e.g. scheduler.test.js) has registered a mock for the same path.
+jest.resetModules()
+
 const { warmDependencyCache, getDependencies } = await import('../../../src/services/dependencies/index.js')
 
 describe('warmDependencyCache', () => {

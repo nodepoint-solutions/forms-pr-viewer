@@ -6,6 +6,16 @@ import * as pypiAdapter from './adapters/pypi.js'
 
 const ADAPTERS = { npm: npmAdapter, pypi: pypiAdapter }
 
+const EMPTY_DEP_DATA = { fetchedAt: null, rows: [], trackedDependencies: [], driftCount: 0 }
+
+let depStore = null
+
+// Read-only cache access — never triggers API calls.
+// Returns EMPTY_DEP_DATA if the cache has not been warmed yet.
+export function getDependencies() {
+  return depStore ?? EMPTY_DEP_DATA
+}
+
 async function getLatestVersion(ecosystem, packageName) {
   const cacheKey = `dep:latest:${ecosystem}:${packageName}`
   if (!depCache.isExpired(cacheKey, config.cacheTtlMs)) {
@@ -40,11 +50,13 @@ async function getManifestContent(org, repoName, manifestFile) {
   return content
 }
 
-export async function getDependencies() {
+// Fetches from GitHub/registries and populates the cache. Called only by the scheduler.
+export async function warmDependencyCache() {
   const { org, team, githubToken, trackedDependencies } = config
 
   if (!trackedDependencies.length) {
-    return { rows: [], trackedDependencies: [], driftCount: 0, fetchedAt: new Date() }
+    depStore = { rows: [], trackedDependencies: [], driftCount: 0, fetchedAt: new Date() }
+    return depStore
   }
 
   const allRepos = await fetchAllPages(`/orgs/${org}/teams/${team}/repos?per_page=100`, githubToken)
@@ -93,5 +105,6 @@ export async function getDependencies() {
     Object.values(row.deps).some((d) => d.isDrift)
   ).length
 
-  return { rows: filteredRows, trackedDependencies, driftCount, fetchedAt: new Date() }
+  depStore = { rows: filteredRows, trackedDependencies, driftCount, fetchedAt: new Date() }
+  return depStore
 }
