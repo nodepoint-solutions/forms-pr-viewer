@@ -57,7 +57,7 @@ describe('getDependencies', () => {
   })
 
   it('marks a package as drifted when pinned !== latest', async () => {
-    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api', permissions: { admin: true } }])
     mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('22.0.0')
     mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '^21.3.0' } }))
     mockNpmAdapter.extractVersion.mockReturnValueOnce('^21.3.0')
@@ -69,7 +69,7 @@ describe('getDependencies', () => {
   })
 
   it('marks a package as not drifted when pinned === latest', async () => {
-    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api', permissions: { admin: true } }])
     mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('21.3.0')
     mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '21.3.0' } }))
     mockNpmAdapter.extractVersion.mockReturnValueOnce('21.3.0')
@@ -79,7 +79,7 @@ describe('getDependencies', () => {
   })
 
   it('excludes repos where no tracked packages are present', async () => {
-    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api', permissions: { admin: true } }])
     mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('21.3.0')
     mockFetchFile.mockResolvedValueOnce(null)
     const result = await getDependencies()
@@ -87,7 +87,7 @@ describe('getDependencies', () => {
   })
 
   it('includes repos where at least one tracked package is present', async () => {
-    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api', permissions: { admin: true } }])
     mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('21.3.0')
     mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '21.3.0' } }))
     mockNpmAdapter.extractVersion.mockReturnValueOnce('21.3.0')
@@ -97,12 +97,26 @@ describe('getDependencies', () => {
   })
 
   it('sets latest to null when registry fetch fails', async () => {
-    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api', permissions: { admin: true } }])
     mockNpmAdapter.fetchLatestVersion.mockRejectedValueOnce(new Error('network error'))
     mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '21.3.0' } }))
     mockNpmAdapter.extractVersion.mockReturnValueOnce('21.3.0')
     const result = await getDependencies()
     expect(result.rows[0].deps['npm:hapi'].latest).toBeNull()
     expect(result.rows[0].deps['npm:hapi'].isDrift).toBe(false)
+  })
+
+  it('excludes repos where the team does not have admin permissions', async () => {
+    mockFetchAllPages.mockResolvedValueOnce([
+      { name: 'forms-api', permissions: { admin: true } },
+      { name: 'forms-runner', permissions: { admin: false } },
+      { name: 'forms-shared', permissions: undefined },
+    ])
+    mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('21.3.0')
+    mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '21.3.0' } }))
+    mockNpmAdapter.extractVersion.mockReturnValueOnce('21.3.0')
+    const result = await getDependencies()
+    expect(result.rows).toHaveLength(1)
+    expect(result.rows[0].repo).toBe('forms-api')
   })
 })

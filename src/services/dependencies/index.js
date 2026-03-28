@@ -47,7 +47,8 @@ export async function getDependencies() {
     return { rows: [], trackedDependencies: [], driftCount: 0, fetchedAt: new Date() }
   }
 
-  const repos = await fetchAllPages(`/orgs/${org}/teams/${team}/repos?per_page=100`, githubToken)
+  const allRepos = await fetchAllPages(`/orgs/${org}/teams/${team}/repos?per_page=100`, githubToken)
+  const repos = allRepos.filter((repo) => repo.permissions?.admin)
 
   const latestMap = {}
   await Promise.all(
