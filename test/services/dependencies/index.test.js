@@ -1,0 +1,100 @@
+import { jest, describe, it, expect, beforeEach } from '@jest/globals'
+
+jest.unstable_mockModule('../../../src/config.js', () => ({
+  config: {
+    org: 'test-org',
+    team: 'test-team',
+    githubToken: 'test-token',
+    cacheTtlMs: 300000,
+    trackedDependencies: [
+      { ecosystem: 'npm', packageName: 'hapi' },
+    ],
+  },
+}))
+
+const mockFetchAllPages = jest.fn()
+const mockFetchFile = jest.fn()
+
+jest.unstable_mockModule('../../../src/services/github.js', () => ({
+  fetchAllPages: mockFetchAllPages,
+  fetchFile: mockFetchFile,
+}))
+
+const mockDepCache = {
+  get: jest.fn().mockReturnValue(null),
+  set: jest.fn(),
+  isExpired: jest.fn().mockReturnValue(true),
+  clear: jest.fn(),
+}
+
+jest.unstable_mockModule('../../../src/services/dep-cache.js', () => mockDepCache)
+
+const mockNpmAdapter = {
+  manifestFile: 'package.json',
+  extractVersion: jest.fn(),
+  fetchLatestVersion: jest.fn(),
+}
+
+jest.unstable_mockModule('../../../src/services/dependencies/adapters/npm.js', () => mockNpmAdapter)
+
+const { getDependencies } = await import('../../../src/services/dependencies/index.js')
+
+describe('getDependencies', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockDepCache.isExpired.mockReturnValue(true)
+    mockDepCache.get.mockReturnValue(null)
+  })
+
+  it('returns empty result when trackedDependencies is empty', async () => {
+    const { config } = await import('../../../src/config.js')
+    config.trackedDependencies = []
+    const result = await getDependencies()
+    expect(result.rows).toEqual([])
+    expect(result.trackedDependencies).toEqual([])
+    expect(result.driftCount).toBe(0)
+    config.trackedDependencies = [{ ecosystem: 'npm', packageName: 'hapi' }]
+  })
+
+  it('marks a package as drifted when pinned !== latest', async () => {
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('22.0.0')
+    mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '^21.3.0' } }))
+    mockNpmAdapter.extractVersion.mockReturnValueOnce('^21.3.0')
+    const result = await getDependencies()
+    expect(result.driftCount).toBe(1)
+    expect(result.rows[0].deps['npm:hapi'].isDrift).toBe(true)
+    expect(result.rows[0].deps['npm:hapi'].pinned).toBe('^21.3.0')
+    expect(result.rows[0].deps['npm:hapi'].latest).toBe('22.0.0')
+  })
+
+  it('marks a package as not drifted when pinned === latest', async () => {
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('21.3.0')
+    mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '21.3.0' } }))
+    mockNpmAdapter.extractVersion.mockReturnValueOnce('21.3.0')
+    const result = await getDependencies()
+    expect(result.driftCount).toBe(0)
+    expect(result.rows[0].deps['npm:hapi'].isDrift).toBe(false)
+  })
+
+  it('sets pinned to null when manifest is absent (404)', async () => {
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockNpmAdapter.fetchLatestVersion.mockResolvedValueOnce('21.3.0')
+    mockFetchFile.mockResolvedValueOnce(null)
+    mockNpmAdapter.extractVersion.mockReturnValueOnce(null)
+    const result = await getDependencies()
+    expect(result.rows[0].deps['npm:hapi'].pinned).toBeNull()
+    expect(result.rows[0].deps['npm:hapi'].isDrift).toBe(false)
+  })
+
+  it('sets latest to null when registry fetch fails', async () => {
+    mockFetchAllPages.mockResolvedValueOnce([{ name: 'forms-api' }])
+    mockNpmAdapter.fetchLatestVersion.mockRejectedValueOnce(new Error('network error'))
+    mockFetchFile.mockResolvedValueOnce(JSON.stringify({ dependencies: { hapi: '21.3.0' } }))
+    mockNpmAdapter.extractVersion.mockReturnValueOnce('21.3.0')
+    const result = await getDependencies()
+    expect(result.rows[0].deps['npm:hapi'].latest).toBeNull()
+    expect(result.rows[0].deps['npm:hapi'].isDrift).toBe(false)
+  })
+})
