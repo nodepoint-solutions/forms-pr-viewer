@@ -187,6 +187,7 @@ code {
 .app-badge--blue   { background: var(--blue-bg);   color: var(--blue); }
 .app-badge--grey   { background: var(--grey-bg);   color: var(--text-muted); }
 .app-badge--yellow { background: var(--yellow-bg); color: var(--yellow); }
+.app-badge--green  { background: var(--green-bg);  color: var(--green); }
 
 /* ============================================================
    CONTENT AREA
