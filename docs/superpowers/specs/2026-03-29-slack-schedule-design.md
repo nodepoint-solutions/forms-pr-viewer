@@ -94,7 +94,11 @@ Security always runs after PRs on days they share (e.g. Monday), because they ar
 
 ### Documentation
 
-Update `README.md` (or the existing env var reference) to document `SLACK_PR_DAYS` and `SLACK_SECURITY_DAYS` alongside the existing Slack variables.
+Update `README.md` to document `SLACK_PR_DAYS` and `SLACK_SECURITY_DAYS` alongside the existing Slack variables. The README must list the day-number mapping explicitly (don't assume readers know Sunday = 0):
+
+```
+0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
+```
 
 ## Testing
 
