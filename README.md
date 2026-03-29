@@ -18,7 +18,7 @@ A self-hosted dashboard that shows open pull requests for a GitHub team. It surf
 - **Needs merging** — approved PRs that are ready to land
 - **Dependency drift** — tracks whether key packages are on their latest version across all team repos
 - **Grouped by Jira ticket** — optionally links back to your Jira instance
-- **Slack summary** — post a formatted PR digest to a Slack channel on demand or on a daily schedule (9am UK time); security alert summary posts automatically every Monday after the PR digest and can also be triggered manually from the Security tab
+- **Slack summary** — post a formatted PR digest to a Slack channel on demand or on a schedule (9am UK time, Monday–Friday); security alert summary posts automatically every Monday after the PR digest and can also be triggered manually from the Security tab
 - Background cache warming every 20 minutes (configurable)
 
 ## Requirements
@@ -55,6 +55,8 @@ All configuration is via environment variables. Copy `.env.example` to `.env` an
 | `CACHE_TTL_MS` | No | Cache TTL in milliseconds. Default: `1200000` (20 minutes) |
 | `SLACK_BOT_TOKEN` | No | Slack bot token (`xoxb-…`) to enable Slack summaries |
 | `SLACK_CHANNEL_ID` | No | Slack channel ID to post summaries to. Both token and channel ID must be set to enable Slack |
+| `SLACK_PR_DAYS` | No | Days to send the PR digest. Comma-separated day numbers (0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday). Default: `1,2,3,4,5` |
+| `SLACK_SECURITY_DAYS` | No | Days to send the security alert summary. Same format as `SLACK_PR_DAYS`. Default: `1` |
 | `TRACKED_DEPENDENCIES` | No | Comma-separated list of `ecosystem:package` pairs to track on the Dependencies page (e.g. `npm:express,npm:lodash,pypi:requests`) |
 | `REQUIRED_TEAM_ROLE` | No | Minimum GitHub team role a repo must have to appear in any view. One of `pull`, `triage`, `push`, `maintain`, `admin`. Default: `admin` |
 
@@ -62,9 +64,11 @@ All configuration is via environment variables. Copy `.env.example` to `.env` an
 
 When `SLACK_BOT_TOKEN` and `SLACK_CHANNEL_ID` are set, two types of summary are available:
 
-**PR digest** — sent daily at 9am UK time (Europe/London, DST-aware). Lists PRs that need re-review and PRs awaiting first review, grouped by Jira ticket. Can also be triggered manually from the sidebar.
+**PR digest** — sent Monday–Friday at 9am UK time (Europe/London, DST-aware). Lists PRs that need re-review and PRs awaiting first review, grouped by Jira ticket. Can also be triggered manually from the sidebar.
 
-**Security alert summary** — sent automatically every Monday at 9am UK time, immediately after the PR digest. Shows a count of open Dependabot alerts grouped by severity (Critical / High / Medium / Low) with a link to the Security tab. Can also be triggered manually from the Security tab.
+**Security alert summary** — sent every Monday at 9am UK time, immediately after the PR digest. Shows a count of open Dependabot alerts grouped by severity (Critical / High / Medium / Low) with a link to the Security tab. Can also be triggered manually from the Security tab.
+
+The days each summary fires can be changed with `SLACK_PR_DAYS` and `SLACK_SECURITY_DAYS`. An empty value disables that summary's scheduled sends entirely.
 
 Both summaries include a link back to the dashboard if `APP_URL` is set, and respect a one-hour cooldown when triggered manually.
 
