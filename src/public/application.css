@@ -670,12 +670,6 @@ table.app-table {
 /* Hide the summary — nav is always visible on desktop */
 .app-nav-summary { display: none; }
 
-/* Force nav content visible on desktop regardless of <details> open state.
-   !important needed to override the browser UA stylesheet which hides
-   <details> children via an internal rule when the element is closed. */
-@media (min-width: 769px) {
-  .app-nav-details > .app-nav { display: block !important; }
-}
 
 /* ============================================================
    RESPONSIVE — MOBILE

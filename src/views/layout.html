@@ -26,7 +26,7 @@
         <span class="app-brand__sub">{{ org }} / {{ team }}</span>
       </div>
 
-      <details class="app-nav-details">
+      <details class="app-nav-details" open>
         <summary class="app-nav-summary">
           <span>Navigation</span>
           <svg class="app-nav-summary__chevron" viewBox="0 0 16 16" width="12" height="12" fill="currentColor" aria-hidden="true">
@@ -153,6 +153,7 @@
         </div>
 
       </details>
+      <script>if (window.innerWidth <= 768) document.querySelector('.app-nav-details').removeAttribute('open');</script>
 
     </aside>
 
