@@ -132,7 +132,7 @@
 
         {% if slackEnabled %}
           <div class="app-sidebar__actions">
-            <form method="post" action="{{ '/security-slack-summary' if currentPath == '/security' else '/slack-summary' }}">
+            <form method="post" action="{{ slackAction }}">
               <button type="submit" class="app-action-btn">
                 <svg class="app-action-btn__icon" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
                   <path d="M.989 8 .064 2.68a1.342 1.342 0 0 1 1.85-1.462l13 5.25a1.25 1.25 0 0 1 0 2.064l-13 5.25a1.34 1.34 0 0 1-1.85-1.463L.989 8ZM1.617 3.167 2.5 7.25h4.336a.75.75 0 0 1 0 1.5H2.5l-.883 4.083L13.5 8Z"/>

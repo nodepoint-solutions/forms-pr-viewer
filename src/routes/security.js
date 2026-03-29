@@ -57,6 +57,7 @@ export default {
       groupBy,
       slackEnabled,
       slackStatus,
+      slackAction: '/security-slack-summary',
       org: config.org,
       team: config.team,
     })
