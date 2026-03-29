@@ -130,7 +130,7 @@
           </ul>
         </nav>
 
-        {% if slackEnabled %}
+        {% if slackEnabled and currentPath != '/security' %}
           <div class="app-sidebar__actions">
             <form method="post" action="/slack-summary">
               <button type="submit" class="app-action-btn">
