@@ -239,15 +239,17 @@ code {
 }
 
 .app-sidebar__about {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
   color: var(--text-subtle);
-  opacity: 0.4;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  opacity: 0.8;
   transition: opacity 0.15s;
 }
-.app-sidebar__about:hover { opacity: 0.8; }
-.app-sidebar__about.is-active { opacity: 0.8; }
+.app-sidebar__about:hover { opacity: 1; text-decoration: none; }
+.app-sidebar__about.is-active { opacity: 1; }
 
 /* ============================================================
    ABOUT PAGE
