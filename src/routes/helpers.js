@@ -63,9 +63,10 @@ export function buildNavCounts({ prs, teamMembers }) {
     needsMerging: nonBotPRs.filter((pr) => pr.reviewState === 'APPROVED' && !pr.hasUnreviewedCommits && !pr.draft && teamApproved(pr)).length,
     needsReReview: nonBotPRs.filter((pr) => pr.isReviewed && pr.hasUnreviewedCommits && !pr.draft).length,
     unreviewed: nonBotPRs.filter((pr) => !pr.isReviewed && !pr.draft).length,
-    team: nonBotPRs.filter((pr) => teamMembers.has(pr.author)).length,
-    all: nonBotPRs.length,
-    stale: nonBotPRs.filter((pr) => pr.isStale).length,
+    team: nonBotPRs.filter((pr) => teamMembers.has(pr.author) && !pr.draft).length,
+    all: nonBotPRs.filter((pr) => !pr.draft).length,
+    stale: nonBotPRs.filter((pr) => pr.isStale && !pr.draft).length,
+    drafts: nonBotPRs.filter((pr) => pr.draft).length,
   }
 }
 
