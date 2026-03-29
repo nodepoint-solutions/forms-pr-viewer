@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% from "macros/filters.html" import filterForm %}
+{% from "macros/pr-table.html" import prTable, prTableGrouped %}
+
+{% block content %}
+  <div class="app-page-header">
+    <p class="app-page-header__caption">{{ org }} / {{ team }} team</p>
+    <h1 class="app-page-header__title">{{ title }}</h1>
+    <p class="app-page-header__desc">{{ description }}</p>
+    <p class="app-page-header__meta">
+      Last updated {{ fetchedAtFormatted }} —
+      <form method="POST" action="/refresh" style="display:inline">
+        <button class="app-refresh-btn">Refresh</button>
+      </form>
+    </p>
+  </div>
+
+  {{ filterForm(repoItems, authorItems, query, "/drafts", jiraEnabled) }}
+
+  <p class="app-table-meta">Showing <strong>{{ prs.length }}</strong> draft pull request{{ "s" if prs.length != 1 }}</p>
+
+  {% if groups %}{{ prTableGrouped(groups, query, "/drafts", jiraBaseUrl, org) }}{% else %}{{ prTable(prs, query, "/drafts", org) }}{% endif %}
+{% endblock %}
