@@ -235,22 +235,19 @@ code {
 .app-action-btn:hover .app-action-btn__icon { opacity: 1; }
 
 .app-sidebar__footer {
-  padding: 10px 18px 14px;
-  border-top: 1px solid var(--border);
+  padding: 6px 20px 16px;
 }
 
 .app-sidebar__about {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 11px;
   color: var(--text-subtle);
-  text-decoration: none;
-  opacity: 0.5;
+  opacity: 0.4;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   transition: opacity 0.15s;
 }
-.app-sidebar__about:hover { opacity: 1; text-decoration: none; }
-.app-sidebar__about.is-active { opacity: 1; }
+.app-sidebar__about:hover { opacity: 0.8; }
+.app-sidebar__about.is-active { opacity: 0.8; }
 
 /* ============================================================
    ABOUT PAGE
