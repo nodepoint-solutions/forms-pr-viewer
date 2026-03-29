@@ -22,6 +22,7 @@ jest.unstable_mockModule('../../src/services/prs.js', () => ({
 const mockGetDependencies = jest.fn()
 jest.unstable_mockModule('../../src/services/dependencies/index.js', () => ({
   getDependencies: mockGetDependencies,
+  getSecurityAlerts: jest.fn().mockReturnValue({ alerts: [], alertCount: 0, fetchedAt: new Date() }),
 }))
 
 const { createServer } = await import('../../src/server.js')

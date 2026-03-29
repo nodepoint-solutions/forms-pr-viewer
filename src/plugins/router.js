@@ -10,6 +10,7 @@ import needsReReviewRoute from '../routes/needs-re-review.js'
 import needsMergingRoute from '../routes/needs-merging.js'
 import dependenciesRoute from '../routes/dependencies.js'
 import draftsRoute from '../routes/drafts.js'
+import securityRoute from '../routes/security.js'
 import refreshRoute from '../routes/refresh.js'
 import slackSummaryRoute from '../routes/slack-summary.js'
 
@@ -27,6 +28,6 @@ export default {
       handler: { directory: { path: publicPath } },
     })
 
-    server.route([indexRoute, allRoute, staleRoute, unreviewedRoute, needsReReviewRoute, needsMergingRoute, dependenciesRoute, draftsRoute, refreshRoute, slackSummaryRoute])
+    server.route([indexRoute, allRoute, staleRoute, unreviewedRoute, needsReReviewRoute, needsMergingRoute, dependenciesRoute, draftsRoute, securityRoute, refreshRoute, slackSummaryRoute])
   },
 }

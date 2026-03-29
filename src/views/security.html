@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="app-page-header">
+    <p class="app-page-header__caption">{{ org }} / {{ team }} team</p>
+    <h1 class="app-page-header__title">{{ title }}</h1>
+    <p class="app-page-header__desc">Open Dependabot vulnerability alerts across team repositories.</p>
+    <p class="app-page-header__meta">
+      Last updated {{ fetchedAtFormatted }} —
+      <form method="POST" action="/refresh" style="display:inline">
+        <button class="app-refresh-btn">Refresh</button>
+      </form>
+    </p>
+  </div>
+
+  {% if alertCount == 0 %}
+    <div class="app-alert app-alert--success">
+      No open vulnerability alerts.
+    </div>
+  {% else %}
+    <div class="app-alert app-alert--warning">
+      <strong>{{ alertCount }} open vulnerability alert{{ "s" if alertCount != 1 }}</strong> across team repositories.
+    </div>
+
+    {% for repoGroup in repoAlerts %}
+      <div class="app-group">
+        <h2 class="app-group__heading">
+          <span class="app-group__ticket">{{ repoGroup.repo }}</span>
+          <span class="app-group__count">{{ repoGroup.alerts.length }} alert{{ "s" if repoGroup.alerts.length != 1 }}</span>
+        </h2>
+        <div class="app-table-wrap">
+          <table class="app-table">
+            <thead>
+              <tr>
+                <th>Package</th>
+                <th>Severity</th>
+                <th>Advisory</th>
+                <th>ID</th>
+                <th>Fixed in</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for alert in repoGroup.alerts %}
+              <tr>
+                <td class="app-mono">{{ alert.package }}</td>
+                <td>
+                  {% if alert.severity == 'critical' %}
+                    <span class="app-pill app-pill--red">Critical</span>
+                  {% elif alert.severity == 'high' %}
+                    <span class="app-pill app-pill--orange">High</span>
+                  {% elif alert.severity == 'medium' %}
+                    <span class="app-pill app-pill--yellow">Medium</span>
+                  {% else %}
+                    <span class="app-pill app-pill--blue">Low</span>
+                  {% endif %}
+                </td>
+                <td>{{ alert.title }}</td>
+                <td class="app-mono">
+                  {% if alert.ghsaId %}
+                    <a href="https://github.com/advisories/{{ alert.ghsaId }}" target="_blank" rel="noopener noreferrer">{{ alert.ghsaId }}</a>
+                  {% endif %}
+                  {% if alert.cveId %}<span class="app-text-muted"> / {{ alert.cveId }}</span>{% endif %}
+                </td>
+                <td class="app-mono">{{ alert.fixedIn if alert.fixedIn else '—' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
