@@ -3,6 +3,7 @@ import { warmDependencyCache } from './dependencies/index.js'
 import { config } from '../config.js'
 
 const MAX_ATTEMPTS = 8
+const DAY_NAMES = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
 
 export function startScheduler({ skipInitial = false } = {}) {
   let running = false
@@ -75,4 +76,12 @@ export function startSlackScheduler(fn) {
     }, ms)
   }
   schedule()
+}
+
+export function isTodayInDaysUK(days) {
+  const dayName = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/London',
+    weekday: 'short',
+  }).format(new Date())
+  return days.has(DAY_NAMES[dayName])
 }
