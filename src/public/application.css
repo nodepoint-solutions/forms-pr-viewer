@@ -236,6 +236,7 @@ code {
 
 .app-sidebar__footer {
   padding: 6px 20px 16px;
+  margin-top: auto;
 }
 
 .app-sidebar__about {
